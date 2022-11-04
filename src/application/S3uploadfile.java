@@ -140,11 +140,11 @@ public class S3uploadfile {
 		    
 		    if (IsObjectInBucket(s3, bucketName, path) == 0) {
 		    upload_file(s3,bucketName,path);
-		    System.out.print("File uploaded");
+		    System.out.println("File uploaded");
 		    }
 		    else {
 		    	
-		    	System.out.print("Error file already exist in this Bucket");
+		    	System.out.println("Error file already exist in this Bucket");
 		    }
 	 }
 
