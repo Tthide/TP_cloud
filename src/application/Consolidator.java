@@ -1,21 +1,18 @@
 package application;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import java.io.UncheckedIOException;
+
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.Region;
-import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 public class Consolidator {
 
@@ -23,7 +20,7 @@ public class Consolidator {
 
 		// Get file
 		Regions region = Regions.US_EAST_1;
-		S3Object fullObject = null, objectPortion = null, headerOverrideObject = null;
+		S3Object fullObject = null;
 		AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion(region).build();
 
 		fullObject = s3Client.getObject(new GetObjectRequest(bucketName, date));
@@ -38,11 +35,24 @@ public class Consolidator {
 		//
 	}
 
-	public static void main(String[] args) throws IOException { // input : ( String bucketName, String filePath)
+	public static void main(String[] args) throws IOException { // input : ( String date)
 
-		String csv_data=ReadCSV(args[0],args[1]);
+		String bucketName = "consolidatorbucket01";
+		String date=args[0];
+		
+		
+		try {
+		String csv_data=ReadCSV(bucketName,date);
 		System.out.print(csv_data);
 
+		}
+		catch (S3Exception e) {
+            //System.err.println(e.awsErrorDetails().errorMessage());
+            //System.exit(1);
+		}
+		
+		
 	}
+	
 
 }
